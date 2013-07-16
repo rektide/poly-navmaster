@@ -23,15 +23,17 @@ XNavMasterProto.addNode= function(node){
 XNavMasterProto.addNodes= function(nodes){
 	forEach.call(nodes, this.addNodeBound)
 }
-XNavMasterProto.domNodeInsertedHandler= function(mutations){
+function mutationObserver(mutations){
 	mutations.forEach(function(mutation){
 		forEach.call(mutation.addedNodes, this._addNodesBound)
 	})
+
 }
 XNavMasterProto.readyCallback= function(){
-	var els= document.getElementsByTag("x-nav-element")
+	var els= document.getElementsByTagName("x-nav-element")
 	["addNodes","addedNodes"].forEach(makePropBind(this))
-	document.addEventListener("DOMNodeInserted",this.domNodeInsertedHandler.bind(this))
+	this.mutationObserver= new MutationObserver(mutationObserver.bind(this))
+	this.mutationObserver.observe(document, {childList: true})
 }
 var XNavMaster= this.register("x-nav-master",{prototype:XNavMasterProto})
 </script>
