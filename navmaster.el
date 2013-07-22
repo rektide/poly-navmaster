@@ -27,13 +27,16 @@ function mutationObserver(mutations){
 	mutations.forEach(function(mutation){
 		forEach.call(mutation.addedNodes, this._addNodesBound)
 	})
-
+}
+function makeMutationObserver(self){
+	return new MutationObserver(mutationObserver.bind(self))
 }
 XNavMasterProto.readyCallback= function(){
-	var els= document.getElementsByTagName("x-nav-element")
 	["addNodes","addedNodes"].forEach(makePropBind(this))
-	this.mutationObserver= new MutationObserver(mutationObserver.bind(this))
+	this.mutationObserver= makeMutationObserver(this)
 	this.mutationObserver.observe(document, {childList: true})
+	var els= document.getElementsByTagName("x-nav-element")
+	this.addNodes(els)
 }
 var XNavMaster= this.register("x-nav-master",{prototype:XNavMasterProto})
 </script>
